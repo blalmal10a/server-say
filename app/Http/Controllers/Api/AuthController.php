@@ -59,7 +59,7 @@ class AuthController extends Controller
         $roles = $user->getRoleNames();
         $permissions = $user->getPermissionNames();
 
-        if (!request()->user() && !request()->user()->currentAccessToken())
+        if (!request()?->user() && !request()?->user()?->currentAccessToken())
             $token = $user->createToken('TOKEN_NAME_FOR_USER');
         else $token = request()->user()->currentAccessToken();
         return [
