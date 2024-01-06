@@ -11,9 +11,9 @@ class UserService
 {
     public function paginate($request)
     {
-        $sortBy     = $request->sortBy;
+        $sortBy     = $request->sortBy ?? 'created_at';
         $page       = $request->page ? $request->page : 1;
-        $order      = $request->descending === 'true' ? 'desc' : 'asc';
+        $order      = $request->descending === 'false' ? 'asc' : 'desc';
         $perPage    = $request->rowsPerPage ? $request->rowsPerPage : 15;
 
         $query      = (new User())->newQuery();
@@ -28,8 +28,10 @@ class UserService
             $query->role($request->role);
         });
 
+        logger('order: ' . $order);
+        logger('column: ' . $sortBy);
         $query      = $query->with('roles');
-        $query      = $query->orderBy($sortBy ?? 'created_at', $order ?? 'desc');
+        $query      = $query->orderBy($sortBy ?: 'created_at', $order ?? 'desc');
         $results    = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($results, 200);
@@ -57,6 +59,7 @@ class UserService
 
     public function update($user, $attributes): User
     {
+
         if (array_key_exists('password', $attributes)) {
             $user->password = Hash::make($attributes['password']);
             $user->save();
