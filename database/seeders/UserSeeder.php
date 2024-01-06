@@ -18,7 +18,8 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Hriaptuii',
-                'email' => 'hriaptuii@say',
+                'phone' => '1',
+                'corp_id' => 1,
                 'password' => Hash::make('Kurkur3;'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

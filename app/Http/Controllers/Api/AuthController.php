@@ -3,25 +3,44 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function __invoke(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required',
+            'phone' => 'required',
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('phone', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $data = $this->makeUserData($user);
-            return response()->json($data, 200);
+        $user = User::where('phone', $request->phone)->first();
+        if ($user) {
+            if (Hash::check($request->password, $user->password)) {
+
+                $data = $this->makeUserData($user);
+                return response()->json($data, 200);
+                // $token = $user->createToken('api-token')->accessToken;
+                // $response = ['token' => $token];
+                // return response($response, 200);
+            } else {
+                $response = ["message" => "Password mismatch"];
+                return response($response, 422);
+            }
+        } else {
+            $response = ["message" => 'User does not exist'];
+            return response($response, 422);
         }
+        // if (Auth::attempt($credentials)) {
+        //     $user = Auth::user();
+        //     $data = $this->makeUserData($user);
+        //     return response()->json($data, 200);
+        // }
 
         return response()->json(['errors' => ['auth' => 'Invalid login credentials']], 422);
     }
