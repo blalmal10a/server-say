@@ -47,7 +47,9 @@ class AuthController extends Controller
 
     public function getUser(Request $request)
     {
+
         $user = $request->user();
+
         $data = $this->makeUserData($user);
         return response()->json($data, 200);
     }
@@ -56,13 +58,15 @@ class AuthController extends Controller
     {
         $roles = $user->getRoleNames();
         $permissions = $user->getPermissionNames();
-        $token = $user->createToken('TOKEN_NAME_FOR_USER');
 
+        if (!request()->user() && !request()->user()->currentAccessToken())
+            $token = $user->createToken('TOKEN_NAME_FOR_USER');
+        else $token = request()->user()->currentAccessToken();
         return [
             'user' => $user,
             'roles' => $roles,
             'permissions' => $permissions,
-            'token' => $token->plainTextToken,
+            'token' => $token?->plainTextToken,
         ];
     }
 }

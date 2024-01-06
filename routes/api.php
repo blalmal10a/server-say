@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\PagesController;
 use App\Http\Controllers\Api\PermissionsController;
 use App\Http\Controllers\Api\RolesController;
@@ -28,16 +29,17 @@ Route::get('/sanctum/csrf-cookie', function () {
 
 Route::post('/auth/login', AuthController::class)->name('auth.login');
 Route::get('/app/settings', AppController::class)->name('app.settings');
-
+Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
 Route::group([
-    'middleware' =>['auth:sanctum', CheckAcl::class]
+    'middleware' => ['auth:sanctum', CheckAcl::class]
 ], function () {
     Route::get('/auth/user', [AuthController::class, 'getUser'])->name('auth.user');
 
     Route::group([
         'prefix' => 'users',
         'middleware' => [
-            'can:view users, manage users'],
+            'can:view users, manage users'
+        ],
     ], function () {
         Route::get('{user}', [UserController::class, 'show'])->name('users.show');
         Route::get('{params?}', [UserController::class, 'index'])->name('users.index');
@@ -60,7 +62,8 @@ Route::group([
     Route::group([
         'prefix' => 'roles',
         'middleware' => [
-            'can:view roles, manage roles'],
+            'can:view roles, manage roles'
+        ],
     ], function () {
         Route::get('all', [RolesController::class, 'all'])->name('roles.all');
         Route::get('{role}', [RolesController::class, 'show'])->name('roles.show');
@@ -73,7 +76,8 @@ Route::group([
     Route::group([
         'prefix' => 'permissions',
         'middleware' => [
-            'can:view permissions, manage permissions'],
+            'can:view permissions, manage permissions'
+        ],
     ], function () {
         Route::get('all', [PermissionsController::class, 'all'])->name('permissions.all');
         Route::get('{permission}', [PermissionsController::class, 'show'])->name('permissions.show');
