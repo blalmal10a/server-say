@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(private UserService $service) {}
+    public function __construct(private UserService $service)
+    {
+    }
 
     public function index(Request $request)
     {
@@ -19,7 +21,8 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        return $this->service->store($request->all());
+        $this->service->store($request->all());
+        return $this->index(request());
     }
 
     public function show(User $user)
@@ -29,12 +32,14 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
-        return $this->service->update($user, $request->all());
+        $this->service->update($user, $request->all());
+        return $this->index(request());
     }
 
     public function destroy(User $user)
     {
-        return $this->service->destroy($user);
+        $this->service->destroy($user);
+        return $this->index(request());
     }
 
     public function updateAccessControls(Request $request, User $user)

@@ -21,7 +21,7 @@ class UserService
 
         $query->when($request->search, function ($query) use ($request) {
             $query->where('name', 'like', "%$request->search%");
-            $query->orWhere('email', 'like', "%$request->search%");
+            // $query->orWhere('email', 'like', "%$request->search%");
         });
 
         $query->when($request->role, function ($query) use ($request) {
@@ -29,13 +29,13 @@ class UserService
         });
 
         $query      = $query->with('roles');
-        $query      = $query->orderBy($sortBy, $order);
+        $query      = $query->orderBy($sortBy ?? 'created_at', $order ?? 'desc');
         $results    = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($results, 200);
     }
 
-    public function show($user) : User
+    public function show($user): User
     {
         $user['roles'] = $user->roles;
         $user['permissions'] = $user->permissions;
@@ -43,15 +43,19 @@ class UserService
         return $user;
     }
 
-    public function store($attributes) : User
+    public function store($attributes): User
     {
         $user = User::create($attributes);
-        AssignUserRolesAndPermissions::dispatch($user->id, $attributes['roles']);
+        try {
+            AssignUserRolesAndPermissions::dispatch($user->id, $attributes['roles']);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return $user;
     }
 
-    public function update($user, $attributes) : User
+    public function update($user, $attributes): User
     {
         if (array_key_exists('password', $attributes)) {
             $user->password = Hash::make($attributes['password']);

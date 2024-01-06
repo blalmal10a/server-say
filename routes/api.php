@@ -35,18 +35,19 @@ Route::group([
 ], function () {
     Route::get('/auth/user', [AuthController::class, 'getUser'])->name('auth.user');
 
-    Route::group([
-        'prefix' => 'users',
-        'middleware' => [
-            'can:view users, manage users'
-        ],
-    ], function () {
-        Route::get('{user}', [UserController::class, 'show'])->name('users.show');
-        Route::get('{params?}', [UserController::class, 'index'])->name('users.index');
-        Route::post('', [UserController::class, 'store'])->name('users.store');
-        Route::put('{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    });
+    // Route::group([
+    //     'prefix' => 'users',
+    //     'middleware' => [
+    //         'can:view users, manage users'
+    //     ],
+    // ], function () {
+    //     Route::get('{user}', [UserController::class, 'show'])->name('users.show');
+    //     Route::get('{params?}', [UserController::class, 'index'])->name('users.index');
+    //     Route::post('', [UserController::class, 'store'])->name('users.store');
+    //     Route::put('{user}', [UserController::class, 'update'])->name('users.update');
+    //     Route::delete('{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    // });
+    Route::apiResource('users', UserController::class);
 
     Route::group([
         'prefix' => 'pages',

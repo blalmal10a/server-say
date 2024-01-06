@@ -23,19 +23,20 @@ class UserRequest extends FormRequest
     {
         $rules = [
             'name' => 'required',
-            'roles' => 'sometimes|required|array',
+            'roles' => 'nullable',
+            'phone' => 'required',
             'password' => 'sometimes|required|confirmed|min:6',
             'password_confirmation' => 'sometimes|required|min:6',
         ];
 
-        $emailRule = 'required|unique:users,email';
+        // $emailRule = 'required|unique:users,email';
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
             $emailId = $this->route('user')->id;
-            $emailRule .= ',' . $emailId;
+            // $emailRule .= ',' . $emailId;
         }
 
-        $rules['email'] = $emailRule;
+        // $rules['email'] = $emailRule;
 
         return $rules;
     }
