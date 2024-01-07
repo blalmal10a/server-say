@@ -14,7 +14,7 @@ class UserService
         $sortBy     = $request->sortBy ?? 'created_at';
         $page       = $request->page ? $request->page : 1;
         $order      = $request->descending === 'false' ? 'asc' : 'desc';
-        $perPage    = $request->rowsPerPage ? $request->rowsPerPage : 15;
+        $perPage    = $request->rowsPerPage ? $request->rowsPerPage : PHP_INT_MAX;
 
         $query      = (new User())->newQuery();
         $query      = $query->whereNotIn('id', [1, Auth::user()->id]);
@@ -27,9 +27,6 @@ class UserService
         $query->when($request->role, function ($query) use ($request) {
             $query->role($request->role);
         });
-
-        logger('order: ' . $order);
-        logger('column: ' . $sortBy);
         $query      = $query->with('roles');
         $query      = $query->orderBy($sortBy ?: 'created_at', $order ?? 'desc');
         $results    = $query->paginate($perPage, ['*'], 'page', $page);

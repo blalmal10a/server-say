@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\RoutesController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Middleware\CheckAcl;
 use Illuminate\Support\Facades\Route;
 
@@ -30,24 +31,14 @@ Route::get('/sanctum/csrf-cookie', function () {
 Route::post('/auth/login', AuthController::class)->name('auth.login');
 Route::get('/app/settings', AppController::class)->name('app.settings');
 Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
+Route::resource('attendances', AttendanceController::class);
+
 Route::group([
     'middleware' => ['auth:sanctum', CheckAcl::class]
 ], function () {
     Route::get('/auth/user', [AuthController::class, 'getUser'])->name('auth.user');
-
-    // Route::group([
-    //     'prefix' => 'users',
-    //     'middleware' => [
-    //         'can:view users, manage users'
-    //     ],
-    // ], function () {
-    //     Route::get('{user}', [UserController::class, 'show'])->name('users.show');
-    //     Route::get('{params?}', [UserController::class, 'index'])->name('users.index');
-    //     Route::post('', [UserController::class, 'store'])->name('users.store');
-    //     Route::put('{user}', [UserController::class, 'update'])->name('users.update');
-    //     Route::delete('{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    // });
     Route::apiResource('users', UserController::class);
+    // Route::resource('attendances', AttendanceController::class);
 
     Route::group([
         'prefix' => 'pages',
