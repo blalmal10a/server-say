@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DesignationController;
+use App\Http\Controllers\FaithPromiseController;
 use App\Http\Middleware\CheckAcl;
 use App\Models\Designation;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,7 @@ Route::post('/auth/login', AuthController::class)->name('auth.login');
 Route::get('/app/settings', AppController::class)->name('app.settings');
 Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
 Route::resource('attendances', AttendanceController::class);
+
 Route::resource('designations', DesignationController::class);
 
 Route::group([
@@ -43,6 +45,7 @@ Route::group([
     Route::apiResource('users', UserController::class);
     // Route::resource('attendances', AttendanceController::class);
 
+    Route::resource('faith-promises', FaithPromiseController::class);
     Route::group([
         'prefix' => 'pages',
         'middleware' => ['can:view pages, manage pages']

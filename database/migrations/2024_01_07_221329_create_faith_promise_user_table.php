@@ -14,11 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('faith_promise_user', function (Blueprint $table) {
-            $table->id();
             $table->foreignIdFor(FaithPromise::class);
             $table->foreignIdFor(User::class);
-            $table->decimal('amount')->default(0);
-            $table->timestamps();
         });
     }
 

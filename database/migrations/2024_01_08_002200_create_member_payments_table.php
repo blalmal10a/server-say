@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faith_promises', function (Blueprint $table) {
+        Schema::create('member_payments', function (Blueprint $table) {
             $table->id();
-            $table->date('month')->default(Carbon::now());
-            $table->decimal('total_amount')->default(0);
-            $table->foreignIdFor(User::class)->nullable();
+            $table->decimal('amount')->default(0);
+            $table->string('payable_type')->nullable();
+            $table->bigInteger('payable_id')->nullable();
+            $table->foreignIdFor(User::class);
+            $table->date('date')->default(Carbon::now());
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('faith_promises');
+        Schema::dropIfExists('member_payments');
     }
 };
