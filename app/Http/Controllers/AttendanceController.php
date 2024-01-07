@@ -71,7 +71,10 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        //
+        return response([
+            'users' => User::all(),
+            'attend_list' => $attendance->users,
+        ]);
     }
 
     /**
@@ -79,7 +82,23 @@ class AttendanceController extends Controller
      */
     public function update(UpdateAttendanceRequest $request, Attendance $attendance)
     {
-        //
+        $request->validate(['attend_list' => 'required|array']);
+
+        try {
+            DB::beginTransaction();
+            $validated =  $request->validated();
+
+            $attendance->update($validated);
+            $att_list_array = $request['attend_list'];
+
+            $att_list  = collect($att_list_array)->pluck('id');
+
+            $attendance->users()->sync($att_list);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response($th->getMessage(), 400);
+        }
     }
 
     /**
@@ -87,6 +106,7 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        //
+        $attendance->delete();
+        return $this->index(request());
     }
 }
