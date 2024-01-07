@@ -17,6 +17,7 @@ class UserService
         $perPage    = $request->rowsPerPage ? $request->rowsPerPage : PHP_INT_MAX;
 
         $query      = (new User())->newQuery();
+        $query->with('designations');
         $query      = $query->whereNotIn('id', [1, Auth::user()->id]);
 
         $query->when($request->search, function ($query) use ($request) {
@@ -51,11 +52,19 @@ class UserService
             //throw $th;
         }
 
+        $user->designations()->attach(request('designations'));
+
         return $user;
     }
 
     public function update($user, $attributes): User
     {
+        $designations = [];
+        foreach (request('designations') as $key => $value) {
+            array_push($designations, $value['id'] ?? $value);
+        }
+
+        $user->designations()->sync($designations);
 
         if (array_key_exists('password', $attributes)) {
             $user->password = Hash::make($attributes['password']);

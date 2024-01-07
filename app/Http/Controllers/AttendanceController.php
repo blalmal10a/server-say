@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
 use App\Models\Attendance;
+use App\Models\Designation;
 use App\Models\User;
 
 use App\Services\PaginateService;
@@ -30,7 +31,13 @@ class AttendanceController extends Controller
      */
     public function create()
     {
-        return User::all();
+        $executive = request('executive');
+        $memberId = Designation::where('name', 'like', 'Member')->first();
+
+        $users = User::when('roles', fn ($q) => $q->whereNot('id', 1));
+
+        $users->orderBy('name', 'desc');
+        return $users->get();
     }
 
     /**

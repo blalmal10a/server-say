@@ -33,6 +33,8 @@ class UserRequest extends FormRequest
             ],
             'password' => 'sometimes|required|confirmed|min:6',
             'password_confirmation' => 'sometimes|required|min:6',
+
+            'designations' => 'required|array',
         ];
 
         // $emailRule = 'required|unique:users,email';
