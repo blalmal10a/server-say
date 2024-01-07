@@ -90,7 +90,7 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        $executive = request('executive');
+        $executive = $attendance->is_executive;
         $memberId = Designation::where('name', 'like', 'Member')->first()->id;
 
         $users = User::query();
@@ -107,8 +107,9 @@ class AttendanceController extends Controller
         }
 
         return response([
-            'users' => $users,
+            'users' => $users->get(),
             'attend_list' => $attendance->users,
+            'is_executive' => $executive,
         ]);
     }
 

@@ -24,6 +24,7 @@ class StoreAttendanceRequest extends FormRequest
         return [
             'date' => 'nullable',
             'tag' => 'nullable',
+            'is_executive' => 'nullable',
         ];
     }
 }
