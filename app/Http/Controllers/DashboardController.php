@@ -18,8 +18,8 @@ class DashboardController extends Controller
 
         return [
             'Member zat' => User::count(),
-            'Inkhawm/Hming lam zat' => Attendance::where('is_executive', false)->count(),
-            'Executive Meeting' => Attendance::where('is_executive', true)->count(),
+            'Avg. Attendance' => number_format(Attendance::average('percentage'), 2) . '%',
+            'Executive Meetings' => Attendance::where('is_executive', true)->count(),
             'Faith Promise belh khawm' => "₹" . FaithPromise::sum('total_amount'),
             // 'faith_promise_count' => FaithPromise::count(),
         ];
