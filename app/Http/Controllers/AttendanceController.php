@@ -129,6 +129,11 @@ class AttendanceController extends Controller
             DB::beginTransaction();
             $validated =  $request->validated();
 
+
+            $validated['no_of_attendant'] = sizeof($request->attend_list);
+            $validated['no_of_members']  = User::count();
+            $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
+
             $attendance->update($validated);
             $att_list_array = $request['attend_list'];
 
