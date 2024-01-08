@@ -15,6 +15,7 @@ use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\FaithPromiseController;
 use App\Http\Middleware\CheckAcl;
 use App\Models\Designation;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,9 +39,15 @@ Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
 Route::resource('attendances', AttendanceController::class);
 Route::get('summary', DashboardController::class);
 Route::resource('designations', DesignationController::class);
-
+Route::get('update-members', function () {
+    $users = User::all();
+    foreach ($users as $user) {
+        $user->designations()->sync([8]);
+    }
+});
 Route::group([
-    'middleware' => ['auth:sanctum', CheckAcl::class]
+    'middleware' => ['auth:sanctum']
+    // 'middleware' => ['auth:sanctum', CheckAcl::class]
 ], function () {
     Route::get('/auth/user', [AuthController::class, 'getUser'])->name('auth.user');
     Route::apiResource('users', UserController::class);

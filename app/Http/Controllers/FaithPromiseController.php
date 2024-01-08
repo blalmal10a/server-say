@@ -53,7 +53,7 @@ class FaithPromiseController extends Controller
 
             $faithPromise = FaithPromise::create([
                 'month' => $request->month,
-                'user_id' => request()->user()->id,
+                'user_id' => request()?->user()?->id,
             ]);
             for ($i = 0; $i < sizeof($collection); $i++) {
                 array_push($user_ids, $collection[$i]['id']);

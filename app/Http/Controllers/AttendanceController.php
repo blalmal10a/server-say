@@ -23,6 +23,8 @@ class AttendanceController extends Controller
     {
         $paginate = new  PaginateService;
         $query = Attendance::query();
+        if (request('is_executive'))
+            $query->where('is_executive', request('is_executive'));
         return $paginate(request(), $query);
     }
 
@@ -63,6 +65,9 @@ class AttendanceController extends Controller
         try {
             DB::beginTransaction();
             $validated =  $request->validated();
+            $validated['no_of_attendant'] = sizeof($request->attend_list);
+            $validated['no_of_members']  = User::count();
+            $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
             $attendance = Attendance::create($validated);
 
             $att_list_array = $request['attend_list'];

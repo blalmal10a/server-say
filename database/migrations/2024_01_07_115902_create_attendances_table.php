@@ -17,6 +17,8 @@ return new class extends Migration
             $table->date('date')->default(Carbon::now());
             $table->string('tag')->nullable();
             $table->decimal('percentage')->nullable();
+            $table->integer('no_of_attendant')->nullable();
+            $table->integer('no_of_members')->nullable();
             $table->boolean('is_executive')->default(false);
             $table->timestamps();
             $table->softDeletes();
