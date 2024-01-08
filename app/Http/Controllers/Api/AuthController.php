@@ -29,7 +29,7 @@ class AuthController extends Controller
                 // $response = ['token' => $token];
                 // return response($response, 200);
             } else {
-                $response = ["message" => "Password mismatch"];
+                $response = ["message" => "Incorrect credentials"];
                 return response($response, 422);
             }
         } else {
