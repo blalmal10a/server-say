@@ -11,7 +11,7 @@ class UpdateFaithPromiseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class UpdateFaithPromiseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'faith_promise_data' => 'required|array',
         ];
     }
 }

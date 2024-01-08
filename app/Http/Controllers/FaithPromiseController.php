@@ -68,15 +68,12 @@ class FaithPromiseController extends Controller
 
                 $total += $collection[$i]['amount'];
                 array_push($payment_details, $data);
-                // array_push($faithPromiseData, $data);
             }
 
+            $faithPromise->total_amount = $total;
+            $faithPromise->save();
+
             $faithPromise->details()->insert($payment_details);
-            // MemberPayment::insert($payment_details);
-
-
-
-
 
             $faithPromise->members()->attach($user_ids);
 
@@ -102,7 +99,10 @@ class FaithPromiseController extends Controller
      */
     public function edit(FaithPromise $faithPromise)
     {
-        return $faithPromise->details()->get();
+        $fp_detail = $faithPromise
+            ->details;
+        $fp_detail->load('user');
+        return $fp_detail;
     }
 
     /**
@@ -110,7 +110,58 @@ class FaithPromiseController extends Controller
      */
     public function update(UpdateFaithPromiseRequest $request, FaithPromise $faithPromise)
     {
-        //
+
+        try {
+            DB::beginTransaction();
+            $validated = $request->validated();
+            $collection = $validated['faith_promise_data'];
+
+            $total = 0;
+            $faithPromiseData = [];
+
+            $user_ids = [];
+            $payment_details = [];
+
+            // $faithPromise = FaithPromise::create([
+            //     'user_id' => request()->user()->id,
+            // ]);
+            for ($i = 0; $i < sizeof($collection); $i++) {
+                $payment = MemberPayment::find($collection[$i]['id']);
+                $payment->update([
+                    'amount' => $collection[$i]['amount']
+                ]);
+                $total += $collection[$i]['amount'];
+                // array_push($user_ids, $collection[$i]['id']);
+                // $data = [
+                //     'user_id' => $collection[$i]['id'],
+                //     'payable_type' => FaithPromise::class,
+                //     'payable_id' => $faithPromise->id,
+                //     'amount' => $collection[$i]['amount'],
+                //     'created_at' => now(),
+                //     'updated_at' => now(),
+                // ];
+
+
+                //     $total += $collection[$i]['amount'];
+                //     array_push($payment_details, $data);
+            }
+
+            $faithPromise->total_amount = $total;
+
+
+            // $faithPromise->details()->insert($payment_details);
+
+            // $faithPromise->members()->attach($user_ids);
+
+            DB::commit();
+
+            return $faithPromise;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response($th->getMessage(), 400);
+        }
+        DB::rollBack();
+        return $request->all();
     }
 
     /**
@@ -118,6 +169,7 @@ class FaithPromiseController extends Controller
      */
     public function destroy(FaithPromise $faithPromise)
     {
-        //
+        $faithPromise->delete();
+        return $this->index(request());
     }
 }
