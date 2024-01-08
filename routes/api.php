@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\RoutesController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\FaithPromiseController;
 use App\Http\Middleware\CheckAcl;
@@ -35,7 +36,7 @@ Route::post('/auth/login', AuthController::class)->name('auth.login');
 Route::get('/app/settings', AppController::class)->name('app.settings');
 Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
 Route::resource('attendances', AttendanceController::class);
-
+Route::get('summary', DashboardController::class);
 Route::resource('designations', DesignationController::class);
 
 Route::group([

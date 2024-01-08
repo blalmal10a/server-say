@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->date('date')->default(Carbon::now());
             $table->string('tag')->nullable();
+            $table->decimal('percentage')->nullable();
             $table->boolean('is_executive')->default(false);
             $table->timestamps();
             $table->softDeletes();

@@ -148,7 +148,7 @@ class FaithPromiseController extends Controller
 
             $faithPromise->total_amount = $total;
 
-
+            $faithPromise->save();
             // $faithPromise->details()->insert($payment_details);
 
             // $faithPromise->members()->attach($user_ids);
