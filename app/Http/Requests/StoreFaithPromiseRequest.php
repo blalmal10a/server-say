@@ -23,6 +23,7 @@ class StoreFaithPromiseRequest extends FormRequest
     {
         return [
             'faith_promise_data' => 'required|array',
+            'month' => 'required',
         ];
     }
 }

@@ -52,6 +52,7 @@ class FaithPromiseController extends Controller
             $payment_details = [];
 
             $faithPromise = FaithPromise::create([
+                'month' => $request->month,
                 'user_id' => request()->user()->id,
             ]);
             for ($i = 0; $i < sizeof($collection); $i++) {
@@ -99,10 +100,14 @@ class FaithPromiseController extends Controller
      */
     public function edit(FaithPromise $faithPromise)
     {
-        $fp_detail = $faithPromise
-            ->details;
-        $fp_detail->load('user');
-        return $fp_detail;
+        // $fp_detail = $faithPromise
+        //     ->details;
+        // $fp_detail->load('user');
+        // return [
+
+        // ];
+
+        return $faithPromise->load('details.user');
     }
 
     /**
@@ -110,7 +115,6 @@ class FaithPromiseController extends Controller
      */
     public function update(UpdateFaithPromiseRequest $request, FaithPromise $faithPromise)
     {
-
         try {
             DB::beginTransaction();
             $validated = $request->validated();
@@ -122,36 +126,19 @@ class FaithPromiseController extends Controller
             $user_ids = [];
             $payment_details = [];
 
-            // $faithPromise = FaithPromise::create([
-            //     'user_id' => request()->user()->id,
-            // ]);
             for ($i = 0; $i < sizeof($collection); $i++) {
                 $payment = MemberPayment::find($collection[$i]['id']);
                 $payment->update([
                     'amount' => $collection[$i]['amount']
                 ]);
                 $total += $collection[$i]['amount'];
-                // array_push($user_ids, $collection[$i]['id']);
-                // $data = [
-                //     'user_id' => $collection[$i]['id'],
-                //     'payable_type' => FaithPromise::class,
-                //     'payable_id' => $faithPromise->id,
-                //     'amount' => $collection[$i]['amount'],
-                //     'created_at' => now(),
-                //     'updated_at' => now(),
-                // ];
-
-
-                //     $total += $collection[$i]['amount'];
-                //     array_push($payment_details, $data);
             }
 
             $faithPromise->total_amount = $total;
+            $faithPromise->month = $request->month;
+
 
             $faithPromise->save();
-            // $faithPromise->details()->insert($payment_details);
-
-            // $faithPromise->members()->attach($user_ids);
 
             DB::commit();
 
