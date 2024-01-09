@@ -124,7 +124,6 @@ class UserSeeder extends Seeder
                     8
                 ];
             }
-
             $user->designations()->attach($designations);
         }
     }
