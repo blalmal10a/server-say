@@ -37,6 +37,7 @@ Route::post('/auth/login', AuthController::class)->name('auth.login');
 Route::get('/app/settings', AppController::class)->name('app.settings');
 Route::post('/auth/logout', LogoutController::class)->name('auth.logout');
 Route::resource('attendances', AttendanceController::class);
+Route::patch('attendances/{attendance}/collection', [AttendanceController::class, 'update_collection']);
 Route::get('summary', DashboardController::class);
 Route::resource('designations', DesignationController::class);
 Route::get('update-members', function () {
