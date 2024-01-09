@@ -9,6 +9,7 @@ use App\Models\Designation;
 use App\Models\User;
 
 use App\Services\PaginateService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
@@ -67,7 +68,12 @@ class AttendanceController extends Controller
             DB::beginTransaction();
             $validated =  $request->validated();
             $validated['no_of_attendant'] = sizeof($request->attend_list);
-            $validated['no_of_members']  = User::count();
+            // $validated['no_of_members']  = User::count();
+            $all_memberes = Designation::where('name', 'like', 'Member')->first()?->users;
+            $validated['no_of_members'] = $all_memberes->count();
+            logger('all members: ', $all_memberes->toArray());
+            logger('no of attendant: ' . $validated['no_of_attendant']);
+            logger('no of members: ' . $validated['no_of_members']);
             $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
             $attendance = Attendance::create($validated);
 
@@ -88,7 +94,7 @@ class AttendanceController extends Controller
      */
     public function show(Attendance $attendance)
     {
-        //
+        return $attendance->load('users');
     }
 
     /**
@@ -147,6 +153,13 @@ class AttendanceController extends Controller
             DB::rollBack();
             return response($th->getMessage(), 400);
         }
+    }
+
+    public function update_collection(Request $request, Attendance $attendance)
+    {
+        $attendance->collection = $request->collection;
+        $attendance->save();
+        return $this->index($request);
     }
 
     /**
