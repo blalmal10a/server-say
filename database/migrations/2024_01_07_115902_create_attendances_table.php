@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->date('date')->default(Carbon::now());
             $table->string('tag')->nullable();
+            $table->decimal('collection')->nullable();
             $table->decimal('percentage')->nullable();
             $table->integer('no_of_attendant')->nullable();
             $table->integer('no_of_members')->nullable();
