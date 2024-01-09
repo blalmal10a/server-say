@@ -37,6 +37,7 @@ class AttendanceController extends Controller
         $memberId = Designation::where('name', 'like', 'Member')->first()->id;
 
         $users = User::query();
+        $users->orderBy('id', 'asc');
         $users->when('roles', fn ($q) => $q->whereNot('id', 1));
 
         if ($executive) {
@@ -99,6 +100,7 @@ class AttendanceController extends Controller
         $memberId = Designation::where('name', 'like', 'Member')->first()->id;
 
         $users = User::query();
+        $users->orderBy('id', 'asc');
         $users->when('roles', fn ($q) => $q->whereNot('id', 1));
 
         if ($executive) {
