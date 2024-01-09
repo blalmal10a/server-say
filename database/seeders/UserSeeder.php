@@ -116,10 +116,15 @@ class UserSeeder extends Seeder
         $users = User::all();
         foreach ($users as $user) {
             if ($user->id == 1) continue;
-            $designations = [
-                $user->id - 1,
-                8
-            ];
+            if ($user->id - 1 == 8) {
+                $designations = [8];
+            } else {
+                $designations = [
+                    $user->id - 1,
+                    8
+                ];
+            }
+
             $user->designations()->attach($designations);
         }
     }
