@@ -22,7 +22,6 @@ class UserService
 
         $query->when($request->search, function ($query) use ($request) {
             $query->where('name', 'like', "%$request->search%");
-            // $query->orWhere('email', 'like', "%$request->search%");
         });
 
         // $query->when($request->role, function ($query) use ($request) {
