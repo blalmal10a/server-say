@@ -22,7 +22,6 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-
                 $data = $this->makeUserData($user);
                 return response()->json($data, 200);
             } else {
