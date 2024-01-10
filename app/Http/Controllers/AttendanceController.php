@@ -23,10 +23,10 @@ class AttendanceController extends Controller
     {
         $paginate = new  PaginateService;
         $query = Attendance::query();
-        // return Attendance::with('users')->paginate();
+        $is_executive = request('is_executive') != 'false';
+        $query->where('is_executive', $is_executive);
 
-        if (!request('is_executive') == 'false')
-            $query->where('is_executive', request('is_executive'));
+
 
         return $paginate(request(), $query);
     }
