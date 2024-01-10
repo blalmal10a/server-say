@@ -29,7 +29,8 @@ class UserRequest extends FormRequest
             // 'phone' => 'required|unique:users,phone,' . $this->id . ',id',
             'phone' => [
                 'required',
-                Rule::unique('users')->ignore(request()->id)
+                Rule::unique('users', 'phone')->ignore(request()->_id, '_id')
+
             ],
             'password' => 'sometimes|required|confirmed|min:6',
             'password_confirmation' => 'sometimes|required|min:6',

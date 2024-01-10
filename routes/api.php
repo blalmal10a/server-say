@@ -32,7 +32,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('test-user', function () {
     // return Designation::all();
-    return User::with('designations')->get();
+    return User::all();
+    // return User::with('designations')->get();
 });
 
 Route::get('/sanctum/csrf-cookie', function () {

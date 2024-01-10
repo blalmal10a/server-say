@@ -104,7 +104,7 @@ class DesignationSeeder extends Seeder
             ],
 
             [
-                'name' => 'Member 3',
+                'name' => 'Member 2',
                 'phone' => 9 + 1,
                 'corp_id' => 1,
                 'password' => Hash::make('Kurkur3;'),
@@ -122,21 +122,28 @@ class DesignationSeeder extends Seeder
             ],
         ];
 
-
+        $member_designation_id = null;
         for ($i = 0; $i < sizeof($users); $i++) {
             $user = User::create($users[$i]);
-
-            if (isset($designations[$i])) {
-                $user->designations()->create($designations[$i]);
+            if ($i == 0) continue;
+            if (isset($designations[$i - 1])) {
+                $user->designations()->create($designations[$i - 1]);
+            } else {
+                if (!$member_designation_id) {
+                    $member_designation_id = Designation::where('name', 'like', 'Member')->first()?->_id;
+                } else {
+                    $user->designations()->attach([$member_designation_id]);
+                }
             }
         }
         // $member = Designation::where('name', 'like', 'Member')->first();
         // logger('member is: ', [$member]);
-        // $user_collection = User::all();
-        // $counter = 1;
-        // foreach ($user_collection as $user) {
-        //     if ($counter == 8) break;
-        //     $user->designations()->attach($member->_id);
-        // }
+        $user_collection = User::all();
+        $counter = 1;
+        foreach ($user_collection as $user) {
+            logger('user id is:' . $user->_id);
+            if ($counter == 8) break;
+            $user->designations()->attach($member_designation_id);
+        }
     }
 }

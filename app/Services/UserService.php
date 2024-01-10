@@ -18,7 +18,7 @@ class UserService
 
         $query      = (new User())->newQuery();
         $query->with('designations');
-        $query      = $query->whereNotIn('id', [1, Auth::user()->id]);
+        $query      = $query->whereNotIn('corp_id', [0]);
 
         $query->when($request->search, function ($query) use ($request) {
             $query->where('name', 'like', "%$request->search%");
@@ -62,7 +62,7 @@ class UserService
     {
         $designations = [];
         foreach (request('designations') as $key => $value) {
-            array_push($designations, $value['id'] ?? $value);
+            array_push($designations, $value['_id'] ?? $value);
         }
 
         $user->designations()->sync($designations);

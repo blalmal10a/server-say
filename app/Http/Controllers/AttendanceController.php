@@ -34,19 +34,28 @@ class AttendanceController extends Controller
     public function create()
     {
         $executive = request('executive');
-        $memberId = Designation::where('name', 'like', 'Member')->first()->id;
+        $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
 
         $users = User::query();
-        $users->orderBy('id', 'asc');
-        $users->when('roles', fn ($q) => $q->whereNot('id', 1));
+        // $users->with([
+        //     'designations' => function ($designation) use ($memberId) {
+        //         logger('member id is: ' . $memberId);
+        //         $designation->where('_id', 1);
+        //     }
+        // ]);
+        $users->orderBy('_id', 'asc');
+        $users->whereNot('corp_id', 0);
+
+
 
         if ($executive) {
             $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->whereNot('designations.id', $memberId);
+                $designation->whereNot('_id', $memberId);
             });
         } else {
+            logger('member id is: ' . $memberId);
             $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->where('designations.id', $memberId);
+                $designation->where('_id', $memberId);
             });
         }
 
@@ -97,11 +106,12 @@ class AttendanceController extends Controller
     public function edit(Attendance $attendance)
     {
         $executive = $attendance->is_executive;
-        $memberId = Designation::where('name', 'like', 'Member')->first()->id;
+        $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
 
         $users = User::query();
         $users->orderBy('id', 'asc');
-        $users->when('roles', fn ($q) => $q->whereNot('id', 1));
+        $users->whereNot('corp_id', 0);
+
 
         if ($executive) {
             $users->whereHas('designations', function ($designation) use ($memberId) {
