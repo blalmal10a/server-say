@@ -18,9 +18,13 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        // $loader = AliasLoader::getInstance();
-        // $loader->alias(\Laravel\Sanctum\PersonalAccessToken::class, \App\Models\Sanctum\PersonalAccessToken::class);
+
+        // Loader Alias
+        $loader = AliasLoader::getInstance();
+
+        // SANCTUM CUSTOM PERSONAL-ACCESS-TOKEN
+        $loader->alias(\Laravel\Sanctum\PersonalAccessToken::class, \App\Models\Sanctum\PersonalAccessToken::class);
     }
 }

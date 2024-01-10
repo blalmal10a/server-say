@@ -10,9 +10,6 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class PersonalAccessToken extends Model implements HasAbilities
 {
-    use HasFactory;
-
-
     /**
      * The attributes that should be cast to native types.
      *
