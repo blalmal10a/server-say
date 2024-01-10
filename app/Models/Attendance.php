@@ -12,6 +12,6 @@ class Attendance extends Model
     protected $guarded = ['id'];
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'attendance_user', 'attendance_id', 'user_id');
     }
 }

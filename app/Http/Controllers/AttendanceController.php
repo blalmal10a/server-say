@@ -23,8 +23,11 @@ class AttendanceController extends Controller
     {
         $paginate = new  PaginateService;
         $query = Attendance::query();
-        if (request('is_executive'))
+        // return Attendance::with('users')->paginate();
+
+        if (!request('is_executive') == 'false')
             $query->where('is_executive', request('is_executive'));
+
         return $paginate(request(), $query);
     }
 
@@ -37,23 +40,15 @@ class AttendanceController extends Controller
         $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
 
         $users = User::query();
-        // $users->with([
-        //     'designations' => function ($designation) use ($memberId) {
-        //         logger('member id is: ' . $memberId);
-        //         $designation->where('_id', 1);
-        //     }
-        // ]);
+
         $users->orderBy('_id', 'asc');
         $users->whereNot('corp_id', 0);
-
-
 
         if ($executive) {
             $users->whereHas('designations', function ($designation) use ($memberId) {
                 $designation->whereNot('_id', $memberId);
             });
         } else {
-            logger('member id is: ' . $memberId);
             $users->whereHas('designations', function ($designation) use ($memberId) {
                 $designation->where('_id', $memberId);
             });
@@ -76,18 +71,17 @@ class AttendanceController extends Controller
             DB::beginTransaction();
             $validated =  $request->validated();
             $validated['no_of_attendant'] = sizeof($request->attend_list);
+
             $validated['no_of_members']  = User::count();
+            $validated['date']  = date('Y-m-d');
             $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
             $attendance = Attendance::create($validated);
-
             $att_list_array = $request['attend_list'];
+            $att_list  = collect($att_list_array)->pluck('_id');
 
-            $att_list  = collect($att_list_array)->pluck('id');
-
-            $attendance->users()->attach($att_list);
+            $attendance->users()->attach($att_list->toArray());
             DB::commit();
         } catch (\Throwable $th) {
-            DB::rollBack();
             return response($th->getMessage(), 400);
         }
     }
@@ -109,17 +103,17 @@ class AttendanceController extends Controller
         $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
 
         $users = User::query();
-        $users->orderBy('id', 'asc');
+        $users->orderBy('_id', 'asc');
         $users->whereNot('corp_id', 0);
 
 
         if ($executive) {
             $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->whereNot('designations.id', $memberId);
+                $designation->whereNot('_id', $memberId);
             });
         } else {
             $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->where('designations.id', $memberId);
+                $designation->where('_id', $memberId);
             });
         }
 
@@ -149,9 +143,9 @@ class AttendanceController extends Controller
             $attendance->update($validated);
             $att_list_array = $request['attend_list'];
 
-            $att_list  = collect($att_list_array)->pluck('id');
-
-            $attendance->users()->sync($att_list);
+            $att_list  = collect($att_list_array)->pluck('_id');
+            logger($att_list->toArray());
+            $attendance->users()->sync($att_list->toArray());
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
