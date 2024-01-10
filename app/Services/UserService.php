@@ -25,12 +25,12 @@ class UserService
             // $query->orWhere('email', 'like', "%$request->search%");
         });
 
-        $query->when($request->role, function ($query) use ($request) {
-            $query->role($request->role);
-        });
-        $query      = $query->with('roles');
+        // $query->when($request->role, function ($query) use ($request) {
+        //     $query->role($request->role);
+        // });
+        // $query      = $query->with('roles');
         $query      = $query->orderBy($sortBy ?: 'id', $order ?? 'desc');
-        logger($query->toSql());
+
         $results    = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($results, 200);
