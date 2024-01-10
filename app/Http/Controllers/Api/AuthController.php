@@ -19,23 +19,12 @@ class AuthController extends Controller
 
         $credentials = $request->only('phone', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $data = $this->makeUserData($user);
-            return response()->json($data, 200);
-        }
-
-        return response(['message' => 'error'], 500);
-
         $user = User::where('phone', $request->phone)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
 
                 $data = $this->makeUserData($user);
                 return response()->json($data, 200);
-                // $token = $user->createToken('api-token')->accessToken;
-                // $response = ['token' => $token];
-                // return response($response, 200);
             } else {
                 $response = ["message" => "Incorrect credentials"];
                 return response($response, 422);
@@ -60,16 +49,11 @@ class AuthController extends Controller
 
     private function makeUserData($user)
     {
-        $roles = $user->getRoleNames();
-        $permissions = $user->getPermissionNames();
-
         if (!request()?->user() && !request()?->user()?->currentAccessToken())
             $token = $user->createToken('TOKEN_NAME_FOR_USER');
         else $token = request()->user()->currentAccessToken();
         return [
             'user' => $user,
-            'roles' => $roles,
-            'permissions' => $permissions,
             'token' => $token?->plainTextToken,
         ];
     }
