@@ -5,7 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+
+// use Illuminate\Foundation\Auth\User as Authenticatable;
+use MongoDB\Laravel\Auth\User as Authenticatable;
+
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Auditable as AuditingAuditable;
@@ -23,6 +26,7 @@ class User extends Authenticatable implements Auditable
      */
 
     protected $guarded = ['id'];
+    // protected $collection = 'users';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,6 +50,6 @@ class User extends Authenticatable implements Auditable
 
     public function designations()
     {
-        return $this->belongsToMany(Designation::class);
+        return $this->belongsToMany(Designation::class, 'designation_user', 'user_id', 'designation_id');
     }
 }

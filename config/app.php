@@ -162,6 +162,9 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
 
+        MongoDB\Laravel\MongoDBServiceProvider::class,
+
+
         /*
          * Application Service Providers...
          */

@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use OwenIt\Auditing\Auditable as AuditingAuditable;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -21,7 +22,7 @@ class AclRoute extends Model implements Auditable
     {
         $routes = [];
 
-        foreach(Route::getRoutes() as $route) {
+        foreach (Route::getRoutes() as $route) {
             if (strpos($route->uri, 'api') !== 0) {
                 continue;
             }

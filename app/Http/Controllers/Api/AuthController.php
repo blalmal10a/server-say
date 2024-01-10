@@ -19,6 +19,14 @@ class AuthController extends Controller
 
         $credentials = $request->only('phone', 'password');
 
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $data = $this->makeUserData($user);
+            return response()->json($data, 200);
+        }
+
+        return response(['message' => 'error'], 500);
+
         $user = User::where('phone', $request->phone)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
@@ -36,11 +44,7 @@ class AuthController extends Controller
             $response = ["message" => 'User does not exist'];
             return response($response, 422);
         }
-        // if (Auth::attempt($credentials)) {
-        //     $user = Auth::user();
-        //     $data = $this->makeUserData($user);
-        //     return response()->json($data, 200);
-        // }
+
 
         return response()->json(['errors' => ['auth' => 'Invalid login credentials']], 422);
     }

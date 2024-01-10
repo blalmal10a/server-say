@@ -111,20 +111,25 @@ class UserSeeder extends Seeder
         ];
 
 
-        DB::table('users')->insert($users);
+        // DB::table('users')->insert($users);
 
-        $users = User::all();
-        foreach ($users as $user) {
-            if ($user->id == 1) continue;
-            if ($user->id - 1 == 8) {
+        $counter = 1;
+        foreach ($users as $user_data) {
+
+            $user = User::create($user_data);
+
+            if ($counter == 1) continue;
+            if ($counter - 1 >= 8) {
                 $designations = [8];
             } else {
                 $designations = [
-                    $user->id - 1,
+                    $counter - 1,
                     8
                 ];
             }
+
             $user->designations()->attach($designations);
+            $counter++;
         }
     }
 }
