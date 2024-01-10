@@ -14,6 +14,7 @@ class FaithPromise extends Model
     public function members()
     {
         return $this->belongsToMany(User::class);
+        // return $this->belongsToMany(User::class, 'faith_promise_user', 'faith_promise_id', 'user_id',);
     }
 
     // public function details()
@@ -23,6 +24,7 @@ class FaithPromise extends Model
 
     public function details()
     {
-        return $this->morphMany(MemberPayment::class, 'payable');
+        return $this->hasMany(FaithPromisePayment::class, 'faith_promise_id', '_id');
+        // return $this->morphMany(MemberPayment::class, 'payable');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFaithPromiseRequest;
 use App\Http\Requests\UpdateFaithPromiseRequest;
 use App\Models\FaithPromise;
+use App\Models\FaithPromisePayment;
 use App\Models\MemberPayment;
 use App\Models\User;
 use App\Services\PaginateService;
@@ -28,7 +29,7 @@ class FaithPromiseController extends Controller
     public function create()
     {
         $users = User::query();
-        $users->when('roles', fn ($q) => $q->whereNot('id', 1));
+        $users->when('roles', fn ($q) => $q->whereNot('_id', 1));
 
         return $users
             ->orderBy('name', 'ASC')
@@ -56,16 +57,14 @@ class FaithPromiseController extends Controller
                 'user_id' => request()?->user()?->id,
             ]);
             for ($i = 0; $i < sizeof($collection); $i++) {
-                array_push($user_ids, $collection[$i]['id']);
+                array_push($user_ids, $collection[$i]['_id']);
                 $data = [
-                    'user_id' => $collection[$i]['id'],
-                    'payable_type' => FaithPromise::class,
-                    'payable_id' => $faithPromise->id,
+                    'user_id' => $collection[$i]['_id'],
+                    'faith_promise_id' => $faithPromise->id,
                     'amount' => $collection[$i]['amount'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
-
 
                 $total += $collection[$i]['amount'];
                 array_push($payment_details, $data);
@@ -74,7 +73,11 @@ class FaithPromiseController extends Controller
             $faithPromise->total_amount = $total;
             $faithPromise->save();
 
-            $faithPromise->details()->insert($payment_details);
+            foreach ($payment_details as $payment) {
+                FaithPromisePayment::create($payment);
+            }
+
+            // $faithPromise->details()->insert($payment_details);
 
             $faithPromise->members()->attach($user_ids);
 
@@ -83,7 +86,7 @@ class FaithPromiseController extends Controller
             DB::rollBack();
             return response($th->getMessage(), 400);
         }
-        DB::rollBack();
+
         return $request->all();
     }
 
@@ -107,7 +110,10 @@ class FaithPromiseController extends Controller
 
         // ];
 
+        //
         return $faithPromise->load('details.user');
+        // return $faithPromise->details;
+        // return $faithPromise->load('details');
     }
 
     /**
@@ -127,7 +133,7 @@ class FaithPromiseController extends Controller
             $payment_details = [];
 
             for ($i = 0; $i < sizeof($collection); $i++) {
-                $payment = MemberPayment::find($collection[$i]['id']);
+                $payment = FaithPromisePayment::find($collection[$i]['_id']);
                 $payment->update([
                     'amount' => $collection[$i]['amount']
                 ]);
