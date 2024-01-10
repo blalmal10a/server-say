@@ -163,6 +163,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
 
         MongoDB\Laravel\MongoDBServiceProvider::class,
+        MongoDB\Laravel\Auth\PasswordResetServiceProvider::class,
 
 
         /*
