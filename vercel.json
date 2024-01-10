@@ -6,12 +6,12 @@
     },
     "routes": [
         {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        },
-        {
             "src": "/assets(.*)",
             "dest": "/public/assets/"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
         }
     ],
     "env": {
