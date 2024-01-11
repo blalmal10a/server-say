@@ -29,7 +29,7 @@ class FaithPromiseController extends Controller
     public function create()
     {
         $users = User::query();
-        $users->when('roles', fn ($q) => $q->whereNot('_id', 1));
+        $users->whereNot('corp_id', 0);
 
         return $users
             ->orderBy('name', 'ASC')
@@ -101,7 +101,12 @@ class FaithPromiseController extends Controller
      */
     public function show(FaithPromise $faithPromise)
     {
-        //
+        // return $faithPromise->details()->with('user')->get();
+        return $faithPromise->load([
+            'details' => fn ($detail) => $detail->where('amount', '=', 0),
+            'details.user'
+        ]);
+        // return $faithPromise->load(['members' => fn ($member) => $member->where('amount', '<', 1)]);
     }
 
     /**
@@ -131,8 +136,11 @@ class FaithPromiseController extends Controller
             DB::beginTransaction();
             $validated = $request->validated();
             $collection = $validated['faith_promise_data'];
-
             $total = 0;
+            logger($request);
+            if ($request->pending) {
+                $total  = $faithPromise->total_amount;
+            }
             $faithPromiseData = [];
 
             $user_ids = [];
