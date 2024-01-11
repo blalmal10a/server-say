@@ -58,15 +58,21 @@ class FaithPromiseController extends Controller
             ]);
             for ($i = 0; $i < sizeof($collection); $i++) {
                 array_push($user_ids, $collection[$i]['_id']);
+                $amount = 0;
+                if (isset($collection[$i]['amount']))
+                    $amount = $collection[$i]['amount'] ?? 0;
+
                 $data = [
                     'user_id' => $collection[$i]['_id'],
                     'faith_promise_id' => $faithPromise->id,
-                    'amount' => $collection[$i]['amount'],
+                    'amount' => $amount,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
 
-                $total += $collection[$i]['amount'];
+
+                $total += $amount;
+
                 array_push($payment_details, $data);
             }
 
@@ -134,10 +140,13 @@ class FaithPromiseController extends Controller
 
             for ($i = 0; $i < sizeof($collection); $i++) {
                 $payment = FaithPromisePayment::find($collection[$i]['_id']);
+                $amount = 0;
+                if (isset($collection[$i]['amount']))
+                    $amount = $collection[$i]['amount'] ?? 0;
                 $payment->update([
-                    'amount' => $collection[$i]['amount']
+                    'amount' => $amount
                 ]);
-                $total += $collection[$i]['amount'];
+                $total += $amount;
             }
 
             $faithPromise->total_amount = $total;
