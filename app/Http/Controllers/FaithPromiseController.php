@@ -101,12 +101,23 @@ class FaithPromiseController extends Controller
      */
     public function show(FaithPromise $faithPromise)
     {
-        // return $faithPromise->details()->with('user')->get();
-        return $faithPromise->load([
-            'details' => fn ($detail) => $detail->where('amount', '=', 0),
-            'details.user'
-        ]);
-        // return $faithPromise->load(['members' => fn ($member) => $member->where('amount', '<', 1)]);
+        // return $faithPromise->load([
+        //     'details' => fn ($detail) => $detail->where('amount', '=', 0),
+        //     'details.user'
+        // ]);
+        $faith_promises = $faithPromise->details()->with('user')->get();
+
+        $fpData = $faithPromise->toArray();
+        $fpData['paid']  = [];
+        $fpData['pending']  = [];
+        foreach ($faith_promises as $faith_promise) {
+            if ($faith_promise->amount == 0)
+                array_push($fpData['pending'], $faith_promise);
+            else
+                array_push($fpData['paid'], $faith_promise);
+        }
+
+        return $fpData;
     }
 
     /**
