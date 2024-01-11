@@ -72,9 +72,10 @@ class AttendanceController extends Controller
             $validated =  $request->validated();
             $validated['no_of_attendant'] = sizeof($request->attend_list);
 
-            $validated['no_of_members']  = User::count();
+            $validated['no_of_members']  = User::whereNot('corp_id', 0)
+                ->count();
             $validated['date']  = date('Y-m-d');
-            $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
+            $validated['percentage'] = number_format(($validated['no_of_attendant'] * 100) / $validated['no_of_members'], 2);
             $attendance = Attendance::create($validated);
             $att_list_array = $request['attend_list'];
             $att_list  = collect($att_list_array)->pluck('_id');
@@ -91,7 +92,7 @@ class AttendanceController extends Controller
      */
     public function show(Attendance $attendance)
     {
-        //
+        return $attendance->load('users');
     }
 
     /**
@@ -138,7 +139,7 @@ class AttendanceController extends Controller
 
             $validated['no_of_attendant'] = sizeof($request->attend_list);
             $validated['no_of_members']  = User::count();
-            $validated['percentage'] = ($validated['no_of_attendant'] * 100) / $validated['no_of_members'];
+            $validated['percentage'] = number_format(($validated['no_of_attendant'] * 100) / $validated['no_of_members']);
 
             $attendance->update($validated);
             $att_list_array = $request['attend_list'];
