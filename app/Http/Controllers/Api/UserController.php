@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+// use MongoDB\Laravel\Auth\User;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -21,13 +22,16 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $this->service->store($request->all());
+        $user = User::create($request->validated());
+        $user->designations()->attach(request('designations'));
         return $this->index(request());
     }
 
     public function show(User $user)
     {
-        return $this->service->show($user);
+
+        return $user;
+        // return $this->service->show($user);
     }
 
     public function update(UserRequest $request, User $user)

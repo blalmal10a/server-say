@@ -16,16 +16,18 @@ use OwenIt\Auditing\Auditable as AuditingAuditable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable
+// implements Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, AuditingAuditable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+    // , AuditingAuditable;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-
+    protected $connection = 'mongodb';
     protected $guarded = ['id'];
     // protected $collection = 'users';
 
