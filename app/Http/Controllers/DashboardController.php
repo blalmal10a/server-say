@@ -15,9 +15,9 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-
         return [
-            'Member zat' => User::count(),
+            'Member zat' => User::whereNot('corp_id', 0)
+                ->count(),
             'Avg. Attendance' => number_format(Attendance::average('percentage'), 2) . '%',
             'Executive Meetings' => Attendance::where('is_executive', true)->count(),
             'Faith Promise belh khawm' => "₹" . FaithPromise::sum('total_amount'),
