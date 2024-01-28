@@ -76,7 +76,7 @@ class AttendanceController extends Controller
 
             $validated['no_of_members']  = User::whereNot('corp_id', 0)
                 ->count();
-            $validated['date']  = date('Y-m-d');
+            $validated['date']  = $request->date ?? date('Y-m-d');
             $validated['percentage'] = number_format(($validated['no_of_attendant'] * 100) / $validated['no_of_members'], 2);
             $attendance = Attendance::create($validated);
             $att_list_array = $request['attend_list'];
@@ -110,15 +110,18 @@ class AttendanceController extends Controller
         $users->whereNot('corp_id', 0);
 
 
-        if ($executive) {
-            $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->whereNot('_id', $memberId);
-            });
-        } else {
-            $users->whereHas('designations', function ($designation) use ($memberId) {
-                $designation->where('_id', $memberId);
-            });
-        }
+        // if ($executive) {
+        //     $users->whereHas('designations', function ($designation) use ($memberId) {
+        //         $designation->whereNot('_id', $memberId);
+        //     });
+        // } else {
+        //     $users->whereHas('designations', function ($designation) use ($memberId) {
+        //         $designation->where('_id', $memberId);
+        //     });
+        // }
+
+        if ($executive)
+            $users->where('is_executive', $executive == 1);
 
         return response([
             'users' => $users->get(),
