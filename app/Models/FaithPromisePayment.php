@@ -16,4 +16,9 @@ class FaithPromisePayment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function faith_promise()
+    {
+        return $this->belongsTo(FaithPromise::class);
+    }
 }

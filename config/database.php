@@ -95,7 +95,7 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('DATABASE_URL'),
-            'database' => 'myappdb',
+            'database' => env('DB_DATABASE', 'myappdb'),
         ],
 
 

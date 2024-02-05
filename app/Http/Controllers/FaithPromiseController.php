@@ -9,6 +9,7 @@ use App\Models\FaithPromisePayment;
 use App\Models\MemberPayment;
 use App\Models\User;
 use App\Services\PaginateService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class FaithPromiseController extends Controller
@@ -41,6 +42,12 @@ class FaithPromiseController extends Controller
      */
     public function store(StoreFaithPromiseRequest $request)
     {
+        // return FaithPromise::create([
+        //     'month' => $request->month,
+        //     'user_id' => request()?->user()?->id,
+        // ]);
+
+        return;
         try {
             DB::beginTransaction();
             $validated = $request->validated();
@@ -101,21 +108,37 @@ class FaithPromiseController extends Controller
      */
     public function show(FaithPromise $faithPromise)
     {
-        // return $faithPromise->load([
-        //     'details' => fn ($detail) => $detail->where('amount', '=', 0),
-        //     'details.user'
-        // ]);
         $faith_promises = $faithPromise->details()->with('user')->get();
 
         $fpData = $faithPromise->toArray();
-        $fpData['paid']  = [];
-        $fpData['pending']  = [];
-        foreach ($faith_promises as $faith_promise) {
-            if ($faith_promise->amount == 0)
-                array_push($fpData['pending'], $faith_promise);
-            else
-                array_push($fpData['paid'], $faith_promise);
-        }
+        $paid_users = User::query()
+            ->with(['faith_promise_payments' => fn ($fpp) => $fpp->where('faith_promise_id', $faithPromise->id)])
+            // ->with(
+            //     ['faith_promise_payments'
+            //     => fn ($faith_promise) => $faith_promise->where('_id', $faithPromise->id)]
+            // )
+            ->whereNot('corp_id', 0)
+            ->whereHas(
+                'faith_promise_payments',
+                fn ($faith_promise_payments) => $faith_promise_payments->where('faith_promise_id', $faithPromise->_id)
+            )
+            // ->whereHas('faith_promise_payments.faith_promise',
+            // fn($faihtPromise) => $faithPromise->where('_id', $faithPromise->id);
+            // )
+            ->get();
+
+        $fpData['paid']  = $paid_users;
+        $fpData['pending']  = User::whereNot('corp_id', 0)
+            ->whereDoesntHave(
+                'faith_promise_payments',
+                fn ($faith_promise_payments) => $faith_promise_payments->where('faith_promise_id', $faithPromise->_id)
+            )->get();
+        // foreach ($faith_promises as $faith_promise) {
+        //     if ($faith_promise->amount == 0)
+        //         array_push($fpData['pending'], $faith_promise);
+        //     else
+        //         array_push($fpData['paid'], $faith_promise);
+        // }
 
         return $fpData;
     }
@@ -143,6 +166,12 @@ class FaithPromiseController extends Controller
      */
     public function update(UpdateFaithPromiseRequest $request, FaithPromise $faithPromise)
     {
+
+        $total_amount = $faithPromise->details->sum('amount');
+        $faithPromise->total_amount = $total_amount;
+        $faithPromise->save();
+        return $faithPromise;
+        return;
         try {
             DB::beginTransaction();
             $validated = $request->validated();
@@ -192,5 +221,30 @@ class FaithPromiseController extends Controller
     {
         $faithPromise->delete();
         return $this->index(request());
+    }
+
+    public function check_month_exists(Request $request)
+    {
+
+
+        $faithPromise =  FaithPromise::where('month', $request->date)
+            ->first();
+        if ($faithPromise) {
+            return $faithPromise;
+        }
+
+        $faithPromise =  FaithPromise::create([
+            'month' => $request->date,
+            'user_id' => request()?->user()?->_id,
+        ]);
+
+        $user_ids = User::whereNot('corp_id', 0)->pluck('_id');
+        logger($user_ids);
+        try {
+            $faithPromise->members()->attach($user_ids);
+        } catch (\Throwable $th) {
+            logger($th->getMessage());
+        }
+        return $faithPromise;
     }
 }

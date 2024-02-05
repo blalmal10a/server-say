@@ -25,6 +25,5 @@ class FaithPromise extends Model
     public function details()
     {
         return $this->hasMany(FaithPromisePayment::class, 'faith_promise_id', '_id');
-        // return $this->morphMany(MemberPayment::class, 'payable');
     }
 }

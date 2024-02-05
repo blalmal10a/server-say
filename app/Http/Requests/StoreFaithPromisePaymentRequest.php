@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateFaithPromiseRequest extends FormRequest
+class StoreFaithPromisePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,9 @@ class UpdateFaithPromiseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'faith_promise_data' => 'required|array',
-            // 'month' => 'required',
+            'user_id' => 'required',
+            'faith_promise_id' => 'required',
+            'amount' => 'required',
         ];
     }
 }

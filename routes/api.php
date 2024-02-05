@@ -13,8 +13,10 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\FaithPromiseController;
+use App\Http\Controllers\FaithPromisePaymentController;
 use App\Http\Middleware\CheckAcl;
 use App\Models\Designation;
+use App\Models\FaithPromisePayment;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -59,9 +61,12 @@ Route::group([
 ], function () {
     Route::get('/auth/user', [AuthController::class, 'getUser'])->name('auth.user');
     Route::apiResource('users', UserController::class);
+    Route::apiResource('faith-promise-payments', FaithPromisePaymentController::class);
     // Route::resource('attendances', AttendanceController::class);
 
+    Route::get('faith-promises/check-month-exists', [FaithPromiseController::class, 'check_month_exists']);
     Route::resource('faith-promises', FaithPromiseController::class);
+
     Route::group([
         'prefix' => 'pages',
         'middleware' => ['can:view pages, manage pages']

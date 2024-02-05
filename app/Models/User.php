@@ -55,4 +55,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Designation::class, 'designation_user', 'user_id', 'designation_id');
     }
+
+    public function faith_promises()
+    {
+        $this->belongsToMany(FaithPromise::class);
+    }
+
+    public function faith_promise_payments()
+    {
+        return $this->hasMany(FaithPromisePayment::class);
+    }
 }

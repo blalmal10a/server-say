@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\FaithPromise;
 // use MongoDB\Laravel\Auth\User;
 use App\Models\User;
 use App\Services\UserService;
@@ -52,5 +53,11 @@ class UserController extends Controller
         $user->syncPermissions($request->input('permissions'));
 
         return 'ok';
+    }
+
+
+    public function update_faith_promise(User $user,  $faithPromise)
+    {
+        // $user->
     }
 }
