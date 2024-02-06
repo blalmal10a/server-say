@@ -1,0 +1,1 @@
+import{f as u,d as e,aa as s}from"./index.d3ad043f.js";const n={dark:{type:Boolean,default:null}};function o(a,r){return u(()=>a.dark===null?r.dark.isActive:a.dark)}function d(){return e(s)}export{o as a,d as b,n as u};

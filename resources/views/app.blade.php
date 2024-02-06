@@ -81,6 +81,6 @@
         height: 100svh;
         width: 100%;
         background-color: #263038;
-      }</style>  <script type="module" crossorigin src="/assets/index.42c4e234.js"></script>
+      }</style>  <script type="module" crossorigin src="/assets/index.d3ad043f.js"></script>
   <link rel="stylesheet" href="/assets/index.78daa7bb.css">
 </head><body><div id=wrapper><span class=loader></span></div><div id=q-app></div></body></html>
