@@ -111,17 +111,6 @@ class AttendanceController extends Controller
         $users->orderBy('_id', 'asc');
         $users->whereNot('corp_id', 0);
 
-
-        // if ($executive) {
-        //     $users->whereHas('designations', function ($designation) use ($memberId) {
-        //         $designation->whereNot('_id', $memberId);
-        //     });
-        // } else {
-        //     $users->whereHas('designations', function ($designation) use ($memberId) {
-        //         $designation->where('_id', $memberId);
-        //     });
-        // }
-
         if ($executive)
             $users->where('is_executive', $executive == 1);
 
