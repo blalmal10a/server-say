@@ -24,9 +24,7 @@ class AttendanceController extends Controller
         $paginate = new  PaginateService;
         $query = Attendance::query();
         $is_executive = request('is_executive') != 'false';
-        $query->where('is_executive', $is_executive);
-
-
+        $query->where('is_executive', $is_executive)->orderBy('date', 'desc');
 
         return $paginate(request(), $query);
     }
