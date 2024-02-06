@@ -51,9 +51,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // public function designations()
+    // {
+    //     return $this->belongsToMany(Designation::class, 'designation_user', 'user_id', 'designation_id');
+    // }
+
     public function designations()
     {
-        return $this->belongsToMany(Designation::class, 'designation_user', 'user_id', 'designation_id');
+        return $this->hasMany(Designation::class);
     }
 
     public function faith_promises()
