@@ -19,6 +19,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         return User::query()
+            ->with('designations')
             ->whereNot('corp_id', 0)
             ->paginate($request->rowsPerPage);
         // return $this->service->paginate($request);
