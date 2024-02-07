@@ -34,9 +34,9 @@ class UserRequest extends FormRequest
                 })->ignore(request()->_id, '_id'),
                 // Rule::unique('users', 'phone')->ignore(request()->_id, '_id')
             ],
+            'bial' => 'required',
             'password' => 'sometimes|required|confirmed|min:6',
             'password_confirmation' => 'sometimes|required|min:6',
-
             'designations' => 'required|array',
         ];
 
