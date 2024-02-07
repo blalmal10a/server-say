@@ -123,6 +123,7 @@ class DesignationSeeder extends Seeder
         ];
 
         $member_designation_id = null;
+
         for ($i = 0; $i < sizeof($users); $i++) {
             $user = User::create($users[$i]);
             if ($i == 0) continue;
@@ -130,20 +131,19 @@ class DesignationSeeder extends Seeder
                 $user->designations()->create($designations[$i - 1]);
             } else {
                 if (!$member_designation_id) {
-                    $member_designation_id = Designation::where('name', 'like', 'Member')->first()?->_id;
+                    $member_designation_id = Designation::where('name', 'like', 'Member')->first();
                 } else {
-                    $user->designations()->attach([$member_designation_id]);
+                    $user->designations;
+                    $user->designations()->save($member_designation_id);
                 }
             }
         }
-        // $member = Designation::where('name', 'like', 'Member')->first();
-        // logger('member is: ', [$member]);
+
         $user_collection = User::all();
         $counter = 1;
         foreach ($user_collection as $user) {
-            logger('user id is:' . $user->_id);
             if ($counter == 8) break;
-            $user->designations()->attach($member_designation_id);
+            $user->designations()->save($member_designation_id);
         }
     }
 }
