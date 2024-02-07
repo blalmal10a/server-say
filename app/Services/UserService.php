@@ -64,7 +64,7 @@ class UserService
             array_push($designations, $value['_id'] ?? $value);
         }
 
-        $user->designations()->sync($designations);
+        $user->designations = $designations;
 
         if (array_key_exists('password', $attributes)) {
             $user->password = Hash::make($attributes['password']);
