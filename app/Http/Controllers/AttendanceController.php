@@ -35,7 +35,6 @@ class AttendanceController extends Controller
     public function create()
     {
         $executive = request('executive');
-        $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
 
         $users = User::query();
 
@@ -48,14 +47,6 @@ class AttendanceController extends Controller
 
         $data = $users
             ->orderBy('name', 'ASC')->get();
-        // foreach ($data as $user) {
-        //     if ($user->designation_id == ['Member']) {
-        //         $user->is_executive = false;
-        //     } else {
-        //         $user->is_executive = true;
-        //     }
-        //     $user->save();
-        // }
         return $data;
     }
 
@@ -66,7 +57,6 @@ class AttendanceController extends Controller
     {
 
         $request->validate(['attend_list' => 'required|array']);
-        // $request->validate(['attend_list' => 'present|array']);
         try {
             DB::beginTransaction();
             $validated =  $request->validated();
@@ -103,8 +93,6 @@ class AttendanceController extends Controller
     public function edit(Attendance $attendance)
     {
         $executive = $attendance->is_executive;
-        $memberId = Designation::where('name', 'like', 'Member')->first()->_id;
-
         $users = User::query();
         $users->orderBy('_id', 'asc');
         $users->whereNot('corp_id', 0);
